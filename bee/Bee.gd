@@ -18,10 +18,12 @@ func _ready() -> void:
 
 
 func _physics_process(delta: float) -> void:
+	# in order to scale damping with velocity, we add it as factor here
 	var target_velocity = _velocity + transform.basis_xform(Vector2.RIGHT * _stats.max_velocity * _move_direction * delta * velocity_damping * velocity_damping)
 	_velocity = target_velocity.clamped(_stats.max_velocity * velocity_damping * velocity_damping)
 	_velocity = lerp(_velocity, Vector2.ZERO, delta * velocity_damping)
 	_velocity = move_and_slide(_velocity)
+	# in order to scale damping with velocity, we add it as factor here
 	_angular_velocity = clamp(_angular_velocity + _turn_direction * delta * angular_damping * angular_damping,
 		-_stats.max_angular_velocity,
 		_stats.max_angular_velocity)
