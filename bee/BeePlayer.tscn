@@ -5,3 +5,12 @@
 
 [node name="BeePlayer" instance=ExtResource( 1 )]
 script = ExtResource( 2 )
+
+[node name="Camera2D" type="Camera2D" parent="." index="2"]
+current = true
+process_mode = 0
+limit_left = -1000
+limit_top = -1000
+limit_right = 1000
+limit_bottom = 1000
+smoothing_enabled = true
