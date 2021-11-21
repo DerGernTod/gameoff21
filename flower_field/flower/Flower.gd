@@ -14,9 +14,11 @@ func _ready() -> void:
 
 
 func _on_Area2D_body_entered(body: Node) -> void:
-	print("body entered")
+#	print("body entered")
 #	die()
+	pass
 
 
 func _on_Area2D_body_exited(body: Node) -> void:
-	print("body left")
+#	print("body left")
+	pass

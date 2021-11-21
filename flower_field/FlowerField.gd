@@ -22,7 +22,7 @@ func _ready() -> void:
 func add_flower(pos: Vector2) -> void:
 	var inst = Flower.instance()
 	inst.position = pos
-	print("generating flower at %s" % inst.position)
+	#print("generating flower at %s" % inst.position)
 	add_child(inst)
 
 
@@ -103,5 +103,5 @@ func _is_valid_group_spawn_point(point: Vector2, cell_size_scaled: Vector2, cols
 
 
 func _is_valid_flower_spawn_point(point: Vector2) -> bool:
-	# TODO: check that flowers are not intersecting with each other
-	return true
+	var intersections = get_world_2d().direct_space_state.intersect_point(point, 10, [], 0b10, false, true)
+	return intersections.size() == 0
