@@ -19,15 +19,18 @@ func _ready() -> void:
 	_add_starting_flowers()
 
 
-func add_flower(pos: Vector2) -> void:
+func add_flower(pos: Vector2, stats: FlowerStats) -> void:
 	var inst = Flower.instance()
 	inst.position = pos
+	stats.deviate()
+	inst.load_stats(stats)
 	#print("generating flower at %s" % inst.position)
 	add_child(inst)
 
 
 func add_flower_group(pos: Vector2) -> void:
 	var rng = RandomNumberGenerator.new()
+	var group_stats = FlowerStats.new()
 	# TODO: define base flower stats for this group
 	for i in NUM_OF_ANNULI:
 		for j in FLOWERS_PER_ANNULUS:
@@ -38,8 +41,7 @@ func add_flower_group(pos: Vector2) -> void:
 				var y:float = pos.y + r * sin(theta)
 				var point := Vector2(x, y)
 				if _is_valid_flower_spawn_point(point):
-					# TODO: define slight variation for each flower
-					add_flower(point)
+					add_flower(point, FlowerStats.new(group_stats))
 					break
 
 

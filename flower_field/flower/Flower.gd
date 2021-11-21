@@ -1,16 +1,20 @@
 extends Node2D
 
-var _stats = {
-	color = Color.rebeccapurple,
-}
+var _stats: Dictionary
 
 
 func die() -> void:
 	queue_free()
 
 
-func _ready() -> void:
+func load_stats(stats: FlowerStats) -> void:
+	_stats = stats._stats
+	scale = Vector2.ONE * _stats.size
 	modulate = _stats.color
+
+
+func _ready() -> void:
+	pass
 
 
 func _on_Area2D_body_entered(body: Node) -> void:

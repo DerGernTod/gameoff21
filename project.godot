@@ -8,6 +8,16 @@
 
 config_version=4
 
+_global_script_classes=[ {
+"base": "Reference",
+"class": "FlowerStats",
+"language": "GDScript",
+"path": "res://flower_field/flower/FlowerStats.gd"
+} ]
+_global_script_class_icons={
+"FlowerStats": ""
+}
+
 [application]
 
 config/name="Game Off 2021"
