@@ -1,9 +1,12 @@
 extends Node2D
 
-const MIN_DIST: int = 400		# between starting flowers
+const MIN_DIST: int = 750		# between starting flowers
 const RETRIES: int = 30 		# number of attemps to look for a new flower position around a reference point
 const STARTING_FIELD_RECT := Rect2(Vector2(-2000, -2000), Vector2(4000, 4000))
 const TRANSPOSE: Vector2 = - STARTING_FIELD_RECT.position
+const ANNULUS_RADIUS: int = 140
+const FLOWERS_PER_ANNULUS: int = 4
+const NUM_OF_ANNULI: int = 3
 
 
 onready var Flower = preload("res://flower_field/flower/Flower.tscn")
@@ -21,6 +24,23 @@ func add_flower(pos: Vector2) -> void:
 	inst.position = pos
 	print("generating flower at %s" % inst.position)
 	add_child(inst)
+
+
+func add_flower_group(pos: Vector2) -> void:
+	var rng = RandomNumberGenerator.new()
+	# TODO: define base flower stats for this group
+	for i in NUM_OF_ANNULI:
+		for j in FLOWERS_PER_ANNULUS:
+			for k in RETRIES:
+				var r:float = ANNULUS_RADIUS * (i + 1) * sqrt(rng.randf_range(i / (i + 1), 1.0))	# get random radius
+				var theta:float = randf() * 2 * PI													# get random angle
+				var x:float = pos.x + r * cos(theta)
+				var y:float = pos.y + r * sin(theta)
+				var point := Vector2(x, y)
+				if _is_valid_flower_spawn_point(point):
+					# TODO: define slight variation for each flower
+					add_flower(point)
+					break
 
 
 func _add_starting_flowers() -> void:
@@ -51,18 +71,19 @@ func _add_starting_flowers() -> void:
 		for i in RETRIES:
 			var angle: float = 2 * PI * randf()
 			var point: Vector2 = spawn_center + Vector2(cos(angle), sin(angle)) * (MIN_DIST + MIN_DIST * randf())
-			if _is_valid_flower_spawn_point(point, cell_size_scaled, cols, rows, grid, points):
+			if _is_valid_group_spawn_point(point, cell_size_scaled, cols, rows, grid, points):
 				grid[int((TRANSPOSE.x + point.x) / cell_size_scaled.x)][int((TRANSPOSE.y + point.y) / cell_size_scaled.y)] = points.size()
 				points.append(point)
 				spawn_points.append(point)
-				add_flower(point)
+				add_flower_group(point)
 				sample_accepted = true
 				break
 		
 		if not sample_accepted:
 			spawn_points.remove(spawn_index)
 
-func _is_valid_flower_spawn_point(point: Vector2, cell_size_scaled: Vector2, cols: int, rows: int, grid: Array, points: Array) -> bool:
+
+func _is_valid_group_spawn_point(point: Vector2, cell_size_scaled: Vector2, cols: int, rows: int, grid: Array, points: Array) -> bool:
 	if STARTING_FIELD_RECT.has_point(point):
 		var cell := Vector2(int((TRANSPOSE.x + point.x) / cell_size_scaled.x), int((TRANSPOSE.y + point.y) / cell_size_scaled.y))
 		var cell_start := Vector2(max(0, cell.x - 2), max(0, cell.y - 2))
@@ -79,3 +100,8 @@ func _is_valid_flower_spawn_point(point: Vector2, cell_size_scaled: Vector2, col
 		return true
 	
 	return false
+
+
+func _is_valid_flower_spawn_point(point: Vector2) -> bool:
+	# TODO: check that flowers are not intersecting with each other
+	return true
